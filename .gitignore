@@ -1,0 +1,14 @@
+node_modules
+dist
+.DS_Store
+.vercel
+
+# Original source materials (optimized copies live in public/)
+/Julie Hurley *.jpg
+/Julie Hurley *.png
+/Portfolio Website - FINAL DRAFT.pdf
+/PortfolioWebsiteFINALDRAFT.html
+/Website Build Q&As.pdf
+/Digital Marketing Manager _ Content Strategist _ Julie Hurley _ Resume.pdf
+/image*.png
+/website look example*.png
