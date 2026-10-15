@@ -257,9 +257,33 @@ function initProcess() {
   const progress = root.querySelector('.process__progress');
   const prev = root.querySelector('[data-step="prev"]');
   const next = root.querySelector('[data-step="next"]');
+  const wrap = root.querySelector('.process__panels');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let current = 0;
+  let resizeTimer;
 
-  function select(i, focus = false) {
+  // Smoothly grow/shrink the card area to fit the newly selected phase
+  function animateHeight(from) {
+    if (reduceMotion.matches || !wrap) return;
+    const to = wrap.offsetHeight;
+    if (from === to) return;
+    wrap.classList.add('is-resizing');
+    wrap.style.height = `${from}px`;
+    void wrap.offsetHeight;
+    wrap.style.height = `${to}px`;
+    const done = (e) => {
+      if (e && e.target !== wrap) return;
+      wrap.classList.remove('is-resizing');
+      wrap.style.height = '';
+      wrap.removeEventListener('transitionend', done);
+    };
+    wrap.addEventListener('transitionend', done);
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(done, 500);
+  }
+
+  function select(i, focus = false, animate = true) {
+    const startHeight = wrap ? wrap.offsetHeight : 0;
     current = Math.max(0, Math.min(i, tabs.length - 1));
     tabs.forEach((tab, n) => {
       const active = n === current;
@@ -281,6 +305,7 @@ function initProcess() {
     }
     prev.disabled = current === 0;
     next.disabled = current === tabs.length - 1;
+    if (animate) animateHeight(startHeight);
     if (focus) tabs[current].focus();
   }
 
@@ -306,7 +331,7 @@ function initProcess() {
   prev.addEventListener('click', () => select(current - 1));
   next.addEventListener('click', () => select(current + 1));
 
-  select(0);
+  select(0, false, false);
 }
 
 /* ---------- Contact form (Formspree) ---------- */
