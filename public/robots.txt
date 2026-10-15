@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.julie-hurley-portfolio.com/sitemap.xml
