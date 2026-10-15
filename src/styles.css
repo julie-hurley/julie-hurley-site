@@ -980,16 +980,12 @@ ol {
 .metric__num {
   display: block;
   color: var(--teal-deeper);
-  font-size: clamp(2.4rem, 3vw + 1.2rem, 3.6rem);
+  /* One size for every card so "B2B + B2C" matches the numbers and still fits on one line */
+  font-size: clamp(1.9rem, 1.6vw + 1.2rem, 2.5rem);
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-}
-
-.metric__num--text {
-  font-size: clamp(1.9rem, 1.6vw + 1.2rem, 2.5rem);
-  line-height: 1.15;
   white-space: nowrap;
 }
 
@@ -2050,34 +2046,55 @@ html:not(.js) .process__panel + .process__panel {
   }
 }
 
-.strength-grid {
+/* Team strengths: heading + button on the left, list on the right */
+.strength-split {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: clamp(14px, 2vw, 20px);
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  /* Empty 1fr rows above and below vertically center the heading + button against the list */
+  grid-template-areas:
+    '.    list'
+    'head list'
+    'cta  list'
+    '.    list';
+  grid-template-rows: 1fr auto auto 1fr;
+  column-gap: clamp(40px, 6vw, 80px);
 }
 
-.strength {
-  padding: 22px 24px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  transition: border-color 0.25s, transform 0.25s;
+.strength-split__head {
+  grid-area: head;
 }
 
-.strength:hover {
-  border-color: var(--teal);
-  transform: translateY(-3px);
+.strength-split__head h2 {
+  margin: 0;
 }
 
-.strength h3 {
+.strength-split__cta {
+  grid-area: cta;
+  margin-top: 28px;
+}
+
+.strength-list {
+  grid-area: list;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.strength-list__item {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.strength-list__item h3 {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-  font-size: 1.0625rem;
+  gap: 12px;
+  margin: 0 0 6px;
+  font-size: 1.125rem;
 }
 
-.strength h3::before {
+.strength-list__item h3::before {
   content: '';
   width: 10px;
   height: 10px;
@@ -2086,9 +2103,50 @@ html:not(.js) .process__panel + .process__panel {
   flex-shrink: 0;
 }
 
-.strength p {
+.strength-list__item p {
   margin: 0;
+  padding-left: 22px;
   color: var(--text-muted);
+}
+
+/* Wide screens: title and description side by side to keep the list short */
+@media (min-width: 980px) {
+  .strength-list__item {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    column-gap: 24px;
+    align-items: baseline;
+    padding: 16px 0;
+  }
+
+  .strength-list__item h3 {
+    margin: 0;
+  }
+
+  .strength-list__item p {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .strength-split {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'head'
+      'list'
+      'cta';
+    grid-template-rows: auto;
+  }
+
+  .strength-split__head {
+    margin-bottom: clamp(24px, 5vw, 36px);
+    text-align: center;
+  }
+
+  .strength-split__cta {
+    margin-top: 40px;
+    text-align: center;
+  }
 }
 
 .banner {
@@ -2198,6 +2256,17 @@ html:not(.js) .process__panel + .process__panel {
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
+@media (max-width: 600px) {
+  .tag-cloud {
+    gap: 8px;
+  }
+
+  .tag-cloud li {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+  }
+}
+
 .tag-cloud li:hover {
   background: var(--teal);
   border-color: var(--teal);
@@ -2228,13 +2297,72 @@ html:not(.js) .process__panel + .process__panel {
 }
 
 .edu-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
 }
 
-.edu-list li + li {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
+.edu-list > li {
+  padding: 0 clamp(20px, 3vw, 36px);
+}
+
+.edu-list > li:first-child {
+  padding-left: 0;
+}
+
+.edu-list > li:last-child {
+  padding-right: 0;
+}
+
+.edu-list > li + li {
+  border-left: 1px solid var(--border);
+}
+
+.edu-list strong {
+  margin-bottom: 14px;
+}
+
+/* One credential per line so each column is easy to scan */
+.edu-list .edu-items {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+
+.edu-list .edu-items li {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 18px;
+  border: 0;
+  line-height: 1.45;
+}
+
+.edu-list .edu-items li::before {
+  content: '';
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--teal);
+}
+
+@media (max-width: 860px) {
+  .edu-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .edu-list > li {
+    padding: 0;
+  }
+
+  .edu-list > li + li {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
 }
 
 .edu-list strong {
@@ -2420,15 +2548,6 @@ html:not(.js) .process__panel + .process__panel {
   object-fit: cover;
   object-position: 30% 40%;
   border-radius: var(--radius-lg);
-}
-
-.availability {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 20px;
-  list-style: none;
 }
 
 /* ---------- Scroll reveal ---------- */
